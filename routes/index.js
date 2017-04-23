@@ -88,60 +88,6 @@ router.get('/', function(req, res, next) {
         });
     });
 
-    pool.connect(function (err, client, done) {
-        if (err) {
-            return console.error('error fetching client from pool', err);
-        }
-
-        function endHandler () {
-            count--; // decrement count by 1
-            if (count == 0) {
-                // two queries have ended, lets close the connection.
-                done();
-                res.redirect('/admin/sp');
-            }
-        }
-        q = 'Select * from sanpham where mahxs not in (1,2)';
-        console.log(q);
-        var queryPreferences = client.query(q, function (err, result) {
-            //call `done(err)` to release the client back to the pool (or destroy it if there is an error)
-
-
-            if (err) {
-                return console.error('error running query', err);
-            }
-
-            lastid = result.rows[0].masp;
-            console.log(lastid);
-
-        });
-
-        var insertctsanpham = function () {
-
-            var queryFoods = client.query("insert into ctsanpham(maincam,gps,wifi,bluetooth,bonho,masp,sim," +
-                "gpu,dophangiai,subcam,trongluong,thenho,hdh,cpu,thoigiancho,kichthuoc,ram,thoigianthoai,cambien) " +
-                "values('" + maincam + "','" + gps + "','" + wifi + "','" + bluetooth + "','" + bonho + "','" + lastid + "'," +
-                "'" + sim + "','" + gpu + "','" + dophangiai + "','" + subcam + "','" + trongluong + "','" + thenho + "','" + hdh + "','" + cpu + "'" +
-                ",'" + thoigiancho + "','" + kichthuoc + "','" + ram + "','" + thoigianthoai + "','" + cambien + "'); ");
-
-
-            queryFoods.on('end', function () {
-
-                done();
-                console.log(masp, tensp, gia, tonkho, sim, gps, wifi +
-                    bluetooth, bonho, thenho, hdh, cpu, gpu, ram, cambien, trongluong +
-                    thoigiancho, thoigianthoai, kichthuoc, dophangiai, maincam, subcam);
-                res.redirect('/admin/sp');
-
-
-            });
-        }
-
-        queryPreferences.on('end', insertctsanpham);
-
-
-
-    })
 });
 router.get('/sanpham',function (req,res) {
     res.render('product',{amountOfProduct:req.cookies.amountOfProduct});
