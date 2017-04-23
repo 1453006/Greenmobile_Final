@@ -1,0 +1,47 @@
+.avt h2{
+    font-size: 18px;
+}
+
+table th{
+    height: 50px;
+}
+
+.btn-info{
+    background-color: #1a1a1a;
+}
+.btn{
+    background-color: #1a1a1a;
+}
+body {
+    font-weight: 100;
+}
+
+#sidebar{
+    margin-top: 0px;
+    height: 500px;
+    border-style: solid;
+    border: 1px;
+
+}
+#sidebar h2{
+    background-color: black;
+    color: white;
+    height: auto;
+    padding: 5px;
+
+}
+.active{
+    border:none;
+    border-style: none;
+    height: 50px;
+    margin: 10px;
+}
+.contenttb{
+    margin-left: 50px;
+}
+.btn-info{
+    height: 60px;
+    width: 100px;
+    margin-left: 80%;
+    background-color: #262626;
+}

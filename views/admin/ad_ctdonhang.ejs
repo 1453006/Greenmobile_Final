@@ -1,0 +1,137 @@
+<%
+var donhang = ctdonhang;
+    var note = ghichu;
+ %>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+    <script src="boostrap/js/bootstrap.js"></script>
+
+    <link rel="stylesheet" href="https://www.w3schools.com/lib/w3.css">
+
+    <link rel="stylesheet" href="../stylesheets/progressbar.css" type="text/css">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <link rel="stylesheet" href="../../stylesheets/admin.css" type="text/css"/>
+</head>
+<body>
+<% include partial/sidebar.ejs%>
+
+
+<div class="container "  id="main">
+    <div class="row">
+        <!--navigation bar-->
+
+        <!--CONTENT HERE-->
+
+        <div id="content">
+
+                <div class="row" style="padding-top: 80px">
+                    <div class="col-md-8" >
+
+                        <table id ="maintable" class="table table-hover">
+                            <input type="button" name="btn_update" value="Lưu">
+                            <thead>
+                            <tr >
+                                <th>Tên SP</th>
+                                <th>Số lượng</th>
+
+                                <th>Status</th>
+
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <form  id="form" method="post" action="/admin/ctdh/update"  style="padding-top: 50px">
+                            <%for(var i =0;i<donhang.length;i++){ %>
+                            <tr id="<%= i%>" >
+                                <td class="tensp"><%= donhang[i].tensp%></td>
+                                <td  class="soluong"><%= donhang[i].soluong%></td>
+                                <% if(donhang[i].tinhtrang == 0){%>
+                                <td>  <input class="checkbox" name="checkbox[<%= i%>]" type="checkbox" value="0"></td>
+                                <%} else if(donhang[i].tinhtrang == 1) {%>
+                                <td>  <input class="checkbox" name="checkbox[<%= i%>]" type="checkbox" value="1" checked></td>
+                               <%}%>
+
+                                <td>   <input type="text" name="tensp[<%= i%>]" value="<%= donhang[i].tensp%>" hidden></td>
+                                <td>  <input type="text" name="soluong[<%= i%>]" value="<%= donhang[i].soluong%>" hidden></td>
+                                <td>  <input type="text" name="mactdh[<%= i%>]" value="<%= donhang[i].mactdh%>" hidden></td>
+                                <td>  <input type="text" name="madh" value="<%= donhang[i].madh%>" hidden></td>
+                                <td>  <input type="text" name="masp[[<%= i%>]" value="<%= donhang[i].masp%>" hidden></td>
+                                <td>  <input type="text" id="tinhtrang<%= i%>" name="tinhtrang[<%= i%>]" value="<%= donhang[i].tinhtrang%>" hidden></td>
+
+                            </tr>
+                            <%} %>
+                            </form>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="col-md-4" class="ghichu"
+                    style="background: lightgoldenrodyellow; border: dotted;height: 500px;padding: 15px;font-weight: bold">
+                        <p style="color:red;text-align: center">Ghi chú</p>
+                        <p ><%= note%></p>
+                    </div>
+
+                </div>
+
+
+                </tbody>
+
+        </div>
+        <!--close content here-->
+
+
+
+        <div class="footer">
+            <div class="container">
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination">
+                        <li class="page-item"><a class="page-link" href="#">Previous</a></li>
+
+                        <li class="page-item"><a class="page-link" href="#">Next</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+
+
+    </div>
+</div>
+</body>
+<script>
+    $("#maintable tr ").click(function (e) {
+
+        var id = $(this).attr("id");
+        console.log(id);
+        if (e.target.type == "checkbox") {
+            // stop the bubbling to prevent firing the row's click event\
+
+            var oldvalue = $("#tinhtrang"+id).attr("value");
+            console.log(oldvalue);
+            if(oldvalue == '1')
+                $("#tinhtrang"+id).val(0);
+            else if(oldvalue == '0')
+                $("#tinhtrang"+id).val(1);
+
+            e.stopPropagation();
+        } else {
+           //do nothing
+        }
+
+    });
+
+    $("input[name='btn_update']").on("click",function () {
+        $("#form").submit();
+    });
+
+</script>
+</html>

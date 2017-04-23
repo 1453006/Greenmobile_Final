@@ -1,0 +1,299 @@
+<%
+var chinhanhs = setting.rows;
+    console.log(chinhanhs);
+
+
+ %>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+    <script src="boostrap/js/bootstrap.js"></script>
+
+    <link rel="stylesheet" href="https://www.w3schools.com/lib/w3.css">
+    <link rel="stylesheet" href="../stylesheets/admin.css" type="text/css"/>
+    <link rel="stylesheet" href="../stylesheets/progressbar.css" type="text/css">
+    <link rel="stylesheet" href="../stylesheets/tabcontent.css" type="text/css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+
+</head>
+<body>
+
+<% include partial/sidebar.ejs%>
+<div class="container "  id="main">
+    <div class="row">
+        <!--navigation bar-->
+        <% include partial/navbar.ejs%>
+        <!--CONTENT HERE-->
+        <div class="row content">
+
+            <ul class="tabs">
+               <!-- <li class="active" rel="tab1">Tab 1</li>
+                <li rel="tab2">Tab 2</li>
+                <li rel="tab3">Tab 3</li>
+                <li rel="tab4">Tab 4</li>-->
+
+                <%for(var i=0;i< chinhanhs.length;i++) { %>
+                    <%if(i == 0){%>
+                        <li class="active" rel="tab<%= i%>"><%= chinhanhs[i].tenchinhanh %></li>
+                    <%}else{%>
+                            <li rel="tab2"><%= chinhanhs[i].tenchinhanh %></li>
+                    <%}%>
+                <% }%>
+            </ul>
+            <div class="tab_container">
+                <h3 class="d_active tab_drawer_heading" rel="tab1">Tab 1</h3>
+               <!-- <div id="tab1" class="tab_content">
+                    <h2>Tab 1 content</h2>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec ac metus augue.</p>
+                </div>
+                &lt;!&ndash; #tab1 &ndash;&gt;
+                <h3 class="tab_drawer_heading" rel="tab2">Tab 2</h3>
+                <div id="tab2" class="tab_content">
+                    <h2>Tab 2 content</h2>
+                    <p>Nunc dui velit, scelerisque eu placerat volutpat, dapibus eu nisi. Vivamus eleifend vestibulum odio non vulputate.</p>
+                </div>
+                &lt;!&ndash; #tab2 &ndash;&gt;
+                <h3 class="tab_drawer_heading" rel="tab3">Tab 3</h3>
+                <div id="tab3" class="tab_content">
+                    <h2>Tab 3 content</h2>
+                    <p>Nulla eleifend felis vitae velit tristique imperdiet. Etiam nec imperdiet elit. Pellentesque sem lorem, scelerisque sed facilisis sed, vestibulum sit amet eros.</p>
+                </div>
+                &lt;!&ndash; #tab3 &ndash;&gt;
+                <h3 class="tab_drawer_heading" rel="tab4">Tab 4</h3>
+                <div id="tab4" class="tab_content">
+                    <h2>Tab 4 content</h2>
+                    <p>Integer ultrices lacus sit amet lorem viverra consequat. Vivamus lacinia interdum sapien non faucibus. Maecenas bibendum, lectus at ultrices viverra, elit magna egestas magna, a adipiscing mauris justo nec eros.</p>
+                </div>-->
+                <%for(var i =0;i< chinhanhs.length;i++){ %>
+                <div id="tab<%= i%>" class="tab_content">
+
+
+
+
+                    <table class="table-bordered contenttable<%= i%>">
+                        <form method="post" action="/admin/st/update">
+
+                            <input name="machinhanh" value="<%= chinhanhs[i].machinhanh%>" hidden>
+                        <div class="row">
+                            <thead>
+                            <tr>
+                                <td class="col-md-4">Settings</td>
+                                <td class="col-md-4">Gía trị</td>
+                                <td class="col-md-4"></td>
+
+                            </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td>Tên chi nhánh</td>
+                                <td><input id="diachi" type="text" name="tenchinhanh" value="<%= chinhanhs[i].tenchinhanh %>" readonly></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>Đơn vị tiền tệ</td>
+                                <td><input id="tiente" name="tiente" type="text" value="vnd" readonly></td>
+
+                            </tr>
+                            <% for(var j =0;j< chinhanhs[i].mailcskh.length;j++) { %>
+                            <tr>
+                                <td>Mail CSKH <%= j+1%></td>
+                                <td><input class="mail" type="text" name="mail[<%= j%>]" value="<%= chinhanhs[i].mailcskh[j] %>" readonly></td>
+                                <%if(j == 0){%>
+                                <td><input type="button" class="add_mailcskh" data-id="<%= i%>" value="add" numchild="<%= chinhanhs[i].mailcskh.length%>" hidden/> </td>
+                                <%}%>
+                            </tr>
+                            <% }%>
+                            <tbody class="mailcskh_area">
+                            <%for(var j=0;j<5;j++){%>
+                                <tr class="mailnew" id="newmail<%= j%>" hidden>
+                                <td>Mail CSKH(new) <%= j+1%></td>
+                                <td><input  type="text" name="newmailcskh[<%= j%>]" />
+                                   <input type="button" id="<%=j%>" value="x" class="rmv_newmail rmv"> </td>
+                                </tr>
+                            <%}%>
+                            </tbody>
+                            <tr>
+                                <td>Địa chỉ liên hệ</td>
+                                <td><input id="diachi" type="text" name="diachi" value="<%= chinhanhs[i].diachi%>" readonly></td>
+                                <td></td>
+                            </tr>
+
+
+                            </tbody>
+
+                            <% for(var h=0;h<chinhanhs[i].hotline.length; h++){ %>
+                            <tr>
+                                <td>Hot Line <%= h+1%></td>
+
+                                <td><input class="hotline" type="text" name="hotline[<%= h%>]" value="<%= chinhanhs[i].hotline[h] %>" readonly></td>
+                                <%if(h == 0){%>
+                                    <td><input type="button" class="add_hotline" data-id="<%= i%>" value="add" numchild="<%= chinhanhs[i].hotline.length%>" hidden/> </td>
+                                <%}%>
+                            </tr>
+                            <%} %>
+                            <tbody class="hotline_area">
+                            <%for(var j=0;j<5;j++){%>
+                            <tr  class="hotlinenew" id="newhotline<%= j%>" hidden>
+                                <td>Hotline (new) <%= j+1%></td>
+                                <td><input type="number"  name="newhotline[<%= j%>]" />
+                                <input type="button" value="x" class="rmv_newhotline rmv"> </td>
+                            </tr>
+                            <%}%>
+                            </tbody>
+                            <tr>
+                           <td><input type="button" value="sửa" class="btn_sua" id="<%= i%> " style="display: block;"></td>
+                            <td><input type="submit"  value="Lưu lại" class="btn_submit" hidden/></td>
+                                <td><input type="button"  value="hủy" class="btn_huy" data-id="<%= i%>" hidden/></td>
+                            </tr>
+                        </div>
+
+                        </form>
+                    </table>
+
+                </div>
+                <%}%>
+
+                <!-- #tab4 -->
+            </div>
+            <!-- .tab_container -->
+        </div>
+
+
+        </div>
+
+    </div>
+</div>
+</body>
+<script>
+
+
+    var num_mailcskh = 0;
+    var num_hotline = 0;
+
+
+    $(".btn_change").on("click",function () {
+
+        $(this).siblings(".btn_save").css("display","block");
+    });
+
+
+
+    $(".btn_sua").on("click",function () {
+
+        var id = $(this).attr("id");
+        /* open all readonly field */
+        var tableid = ".contenttable" +id;
+        $(tableid + " input[name='tiente']").removeAttr("readonly");
+        $(tableid + " input[class='mail']").removeAttr("readonly");
+        $(tableid + " input[name='diachi']").removeAttr("readonly");
+        $(tableid + " input[class='hotline']").removeAttr("readonly");
+        $(tableid + " input[class='add_hotline']").removeAttr("hidden");
+        $(tableid + " input[class='add_mailcskh']").removeAttr("hidden");
+
+        $(this).css("display","none");
+        $(tableid+ " .btn_submit").removeAttr("hidden");
+        $(tableid+ " .btn_huy").removeAttr("hidden");
+    });
+
+    $(".btn_huy").on("click",function () {
+
+        var id = $(this).attr("data-id");
+        console.log(id);
+
+        var tableid = ".contenttable" + id;
+        $(tableid + " input[name='tiente']").attr("readonly", true);
+        $(tableid + " input[class= 'mail']").attr("readonly", true);
+        $(tableid + " input[name='diachi']").attr("readonly", true);
+        $(tableid + " input[class='hotline']").attr("readonly", true);
+        $(tableid + " input[class='add_hotline']").attr("hidden", true);
+        $(tableid + " input[class='add_mailcskh']").attr("hidden", true);
+        $('.btn_sua').css("display", "block");
+
+        $(tableid + ' .btn_submit').attr("hidden", true);
+        $(this).attr("hidden",true);
+
+        $(tableid +" .hotline_area .hotlinenew").attr("hidden",true);
+        $(tableid +" .mailcskh_area .mailnew").attr("hidden",true);
+        num_hotline = 0;
+        num_mailcskh = 0;
+
+    });
+
+    $(".add_hotline").on("click",function () {
+
+       var id =  $(this).attr("data-id");
+        var tableid = ".contenttable" + id;
+
+        $(tableid +" .hotline_area #newhotline"+num_hotline).removeAttr("hidden");
+        num_hotline++;
+    });
+    $(".add_mailcskh").on("click",function () {
+        var id =  $(this).attr("data-id");
+        var tableid = ".contenttable" + id;
+
+        $(tableid +" .mailcskh_area #newmail"+num_mailcskh).removeAttr("hidden");
+        num_mailcskh++;
+    });
+
+    $(".rmv_newmail").on("click",function () {
+        $(this).siblings(".newmail").val("");
+       $(this).closest("tr").attr("hidden",true);
+        num_mailcskh--;
+    });
+
+    $(".rmv_newhotline").on("click",function () {
+        $(this).siblings(".hotlinenew").val("");
+        $(this).closest("tr").attr("hidden",true);
+        num_hotline--;
+    });
+
+
+    $(".tab_content").hide();
+    $(".tab_content:first").show();
+
+    /* if in tab mode */
+    $("ul.tabs li").click(function() {
+
+        $(".tab_content").hide();
+        var activeTab = $(this).attr("rel");
+        $("#"+activeTab).fadeIn();
+
+        $("ul.tabs li").removeClass("active");
+        $(this).addClass("active");
+
+        $(".tab_drawer_heading").removeClass("d_active");
+        $(".tab_drawer_heading[rel^='"+activeTab+"']").addClass("d_active");
+
+    });
+    /* if in drawer mode */
+    $(".tab_drawer_heading").click(function() {
+
+        $(".tab_content").hide();
+        var d_activeTab = $(this).attr("rel");
+        $("#"+d_activeTab).fadeIn();
+
+        $(".tab_drawer_heading").removeClass("d_active");
+        $(this).addClass("d_active");
+
+        $("ul.tabs li").removeClass("active");
+        $("ul.tabs li[rel^='"+d_activeTab+"']").addClass("active");
+    });
+
+
+    /* Extra class "tab_last"
+     to add border to right side
+     of last tab */
+    $('ul.tabs li').last().addClass("tab_last");
+
+</script>
+</html>

@@ -1,0 +1,274 @@
+<%
+      var khachhang_arr = khachhangs;
+        var status_arr = tablestatus;
+ %>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+    <script src="boostrap/js/bootstrap.js"></script>
+
+    <link rel="stylesheet" href="https://www.w3schools.com/lib/w3.css">
+    <link rel="stylesheet" href="../stylesheets/admin.css" type="text/css"/>
+    <link rel="stylesheet" href="../stylesheets/progressbar.css" type="text/css">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+</head>
+<body>
+<% include partial/sidebar.ejs%>
+<div class="container "  id="main">
+    <div class="row ">
+        <!--navigation bar-->
+        <% include partial/navbar.ejs%>
+        <!--CONTENT HERE-->
+        <div class="row content" id="content">
+
+            <button id="btn_addnew" data-toggle="modal" data-target="#myModal">Thêm khách hàng</button>
+            <table id="maintable" class="table table-hover">
+                <thead>
+                <tr >
+                    <th hidden>ID</th>
+                    <th>Tên Khách</th>
+                    <th>Tài khoản</th>
+                    <th>Số ĐT</th>
+                    <th>Ngày tham gia</th>
+                    <th>Tình trạng</th>
+                    <th>Tổng Chi</th>
+                    <th></th>
+                    <th></th>
+
+
+                </tr>
+                </thead>
+                <tbody>
+
+                <%khachhang_arr.forEach(function (kh) {%>
+
+
+                <tr id="tr<%= kh.makh%>">
+                    <td class="makh" hidden><%= kh.makh%></td>
+                    <td class="tenkh"><%= kh.tenkh%></td>
+                    <td class="taikhoan"><%= kh.taikhoan%></td>
+                    <td class="sdt"><%= kh.sdt%></td>
+                    <td  class="ngaythamgia"><%= kh.ngaythamgia%></td>
+                    <td  class="status"><%= kh.status%></td>
+                    <td class="tongchi"><%= kh.tongchi%></td>
+                    <td>
+                        <button class="btn_sua" id="<%= kh.makh%>" type="button" data-toggle="modal" data-target="#myModal">Sửa</button>
+                    </td>
+                    <td>
+                        <button class="btn_xoa" data-id="<%= kh.makh%>" type="button" data-toggle="modal" data-target="#confirm">Xóa</button>
+                    </td>
+                </tr>
+
+
+                <%})%>
+                </tbody>
+            </table>
+            </div>
+            <div class="loader">
+                <svg class="circular" viewBox="25 25 50 50" style="margin-top: 200px">
+                    <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"/>
+                </svg>
+            </div>
+         <!--   <div class="footer">
+                <div class="container">
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination">
+                            <li class="page-item"><a class="page-link" href="#">Previous</a></li>
+
+                            <li class="page-item"><a class="page-link" href="#">Next</a></li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>-->
+        <%include partial/pagi.ejs%>
+
+
+    </div>
+
+    <!-- Modal Khách hàng--->
+    <div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <form  id="form" method="post" action="">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Sửa thông tin khách</h4>
+                </div>
+                <div class="modal-body">
+
+                    <table class="table table-hover">
+                        <tr>
+                            <td hidden >mã kh</td>
+                            <td hidden><input name="makh" type="text"></td>
+                        </tr>
+                        <tr>
+                            <td >Tên khách hàng</td>
+                            <td><input name="tenkh" type="text" required="required"></td>
+
+                        </tr>
+                        <tr>
+                            <td >Tài khoản</td>
+                            <td><input name="taikhoan" type="text" required="required"></td>
+
+                        </tr>
+                        <tr>
+                            <td >Số ĐT</td>
+                            <td><input name="sdt" type="text"></td>
+
+                        </tr>
+                        <tr>
+                            <td>Ngày tham gia</td>
+                            <td><input name="ngaythamgia" type="date"> </td>
+                        </tr>
+                        <tr>
+                            <td>Tình trạng</td>
+                            <td>
+
+                                <select name="status" >
+                                    <%status_arr.forEach(function (s) {%>
+                                    <option value="<%=s.mastatus%>"><%= s.tenstatus%></option>
+                                    <% })%>
+                                </select>
+                            </td>
+                        </tr>
+
+
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <!--<button type="button"  id ="btn_save" class="btn btn-default"  data-dismiss="modal">Lưu</button>-->
+                    <button type="submit" id="btn_submitmodal" class="btn btn-default"  >Lưu</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+
+                </div>
+
+            </div>
+        </form>
+    </div>
+
+</div>
+    <!-- end modal sua -->
+    <!--modal cofirm-->
+    <div class="modal fade" id="confirm" role="dialog">
+        <div class="modal-dialog modal-sm modal-confirm">
+            <form method="post" action="/admin/kh/del">
+
+                <div class="modal-content">
+                    <p style="font-size: 20px; background: indianred">Bạn có chắc chắn ?</p>
+                    <button type="submit" class="btn btn-default" value="yes"  >Yes</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+                </div>
+            </form>
+        </div>
+
+    </div>
+    <!---end modal confirm -->
+
+
+</div>
+<script>
+    $(document).ready(function () {
+
+        $('#content').hide().delay(0).fadeIn(300);
+        $('.loader').delay( 0 ).slideUp(300);
+
+    });
+    var id = -1;
+
+    function formatCurrentdate() {
+        var today = new Date(Date.now()).toLocaleString();
+        var date = today.split(" ");
+        var a1="";
+        var a2="";
+        var datepart = date[1].split("/");
+        if(parseInt(datepart[1]) < 10)
+        {
+            a1="0";
+        }
+        if(parseInt(datepart[0]) < 10)
+        {
+            a2="0";
+        }
+        var datecorrect = datepart[2]+"-"+a1+datepart[1]+"-"+a2+datepart[0];
+        return datecorrect;
+    }
+    /*when submit button has been clicked*/
+   /* $("#btn_submitmodal").on("click",function (e) {
+       e.preventDefault();
+
+        var mastatus = $('#status option:selected').attr('value');
+        $("input[name='mastatus']").val(mastatus);
+
+        $("#form").submit();
+    });*/
+
+
+    $("#btn_addnew").on('click',function (e) {
+
+       e.preventDefault();
+
+        $("#form").attr("action","/admin/kh/add");
+        var d = formatCurrentdate();
+        $("#form").show();
+
+        $("input[name='ngaythamgia']").val(d);
+    });
+    $(".btn_sua").on("click", function (e) {
+        e.preventDefault();
+
+        $("#form").attr("action","/admin/kh/update");
+
+        $("input[name='ngaythamgia']").val(formatCurrentdate());
+        $("#form").show();
+        id = $(this).attr("id");
+        console.log(id);
+
+        $("input[name='makh']").val($("#tr"+id+">.makh").text());
+        $("input[name='tenkh']").val($("#tr"+id+">.tenkh").text());
+        $("input[name='taikhoan']").val($("#tr"+id+">.taikhoan").text());
+        $("input[name='sdt']").val($("#tr"+id+">.sdt").text());
+        var date = formatdate($("#tr"+id+">.ngaythamgia").text());
+        $("input[name='ngaythamgia']").val(date);
+        $("input[name='status']").val($("#tr"+id+">.status").text());
+
+
+    } );
+    function formatdate(d) {
+        var spliter = d.split("/");
+
+        var newdate = spliter[2] + "-" + spliter[1] +"-"+ spliter[0];
+        return newdate;
+    };
+
+    $(".btn_xoa").on("click",function(e){
+
+        e.preventDefault();
+        var id = $(this).attr("data-id");
+        console.log(id);
+        $("#confirm  .modal-content").append("<input name ='delid' value='"+id+"' hidden> </input>");
+        $("#confirm").show();
+
+    });
+
+
+    /*// khi nút lưu modal đc click
+     $("#btn_save").on("click",function () {
+
+
+     });*/
+
+
+
+</script>
+</body>
+</html>

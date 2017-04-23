@@ -1,0 +1,281 @@
+<%
+var loai_arr = loais.rows;
+
+console.log(loai_arr);
+
+var datasearch = mysearch;
+var current = currentpage;
+var prev = currentpage--;
+var next = currentpage++;
+if(loai_arr.length < 10)
+{
+    next = currentpage;
+}
+if(prev < 0)
+{
+    prev = currentpage;
+}
+%>
+<!DOCTYPE html>
+
+
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+    <script src="boostrap/js/bootstrap.js"></script>
+
+    <link rel="stylesheet" href="https://www.w3schools.com/lib/w3.css">
+    <link rel="stylesheet" href="../stylesheets/admin.css" type="text/css"/>
+    <link rel="stylesheet" href="../stylesheets/progressbar.css" type="text/css">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+
+</head>
+<body>
+
+<!--sidebar-->
+<% include partial/sidebar.ejs%>
+
+<div class="container " id="main">
+    <div class="row">
+        <!--navigation bar-->
+        <% include partial/navbar.ejs%>
+        <!--CONTENT HERE-->
+        <div class="row content" id="content">
+
+            <button id="btn_addnew" data-toggle="modal" data-target="#addLoai">Thêm Loại SP</button>
+            <table id="maintable" class="table table-hover">
+                <thead>
+                <tr >
+                    <th hidden>ID</th>
+                    <th>Tên Loại</th>
+
+                    <th></th>
+                    <th></th>
+
+
+                </tr>
+                </thead>
+                <tbody>
+
+                <%loai_arr.forEach(function (a) {%>
+
+
+                <tr id="tr<%= a.mahxs%>">
+                    <td class="maloai" hidden><%= a.mahxs%></td>
+                    <td class="tenloai"><%= a.tenhxs%></td>
+                    <td>
+                        <button class="btn_sua" id="<%= a.mahxs%>" type="button" data-toggle="modal" data-target="#suaLoai">Sửa</button>
+                    </td>
+                    <td>
+                        <button class="btn_xoa" data-id="<%= a.mahxs%>" type="button" data-toggle="modal" data-target="#confirm">Xóa</button>
+                    </td>
+                </tr>
+
+
+                <%})%>
+                </tbody>
+            </table>
+        </div>
+        <div class="loader">
+            <svg class="circular" viewBox="25 25 50 50" style="margin-top: 200px">
+                <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"/>
+            </svg>
+        </div>
+        <!--   <div class="footer">
+               <div class="container">
+                   <nav aria-label="Page navigation example">
+                       <ul class="pagination">
+                           <li class="page-item"><a class="page-link" href="#">Previous</a></li>
+
+                           <li class="page-item"><a class="page-link" href="#">Next</a></li>
+                       </ul>
+                   </nav>
+               </div>
+           </div>-->
+        <%include partial/pagi.ejs%>
+
+
+    </div>
+
+    <!-- Modal Khách hàng--->
+    <div class="modal fade" id="addLoai" role="dialog">
+        <div class="modal-dialog modal-lg">
+            <form  id="form" method="post" action="/admin/loaisp/add">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Thêm Loại SP</h4>
+                    </div>
+                    <div class="modal-body">
+
+                        <table class="table table-hover">
+                            <tr>
+                                <td hidden >mã loại</td>
+                                <td hidden><input name="maloai" type="text"></td>
+                            </tr>
+                            <tr>
+                                <td >Tên loại</td>
+                                <td><input name="tenloai" type="text" required="required"></td>
+
+                            </tr>
+                            <tr>
+
+                                <td><input name="hidden" type="text" value="0" hidden></td>
+
+                            </tr>
+
+
+
+                        </table>
+                    </div>
+                    <div class="modal-footer">
+                        <!--<button type="button"  id ="btn_save" class="btn btn-default"  data-dismiss="modal">Lưu</button>-->
+                        <button type="submit" id="btn_submitmodal" class="btn btn-default"  >Lưu</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+
+                    </div>
+
+                </div>
+            </form>
+        </div>
+
+    </div>
+    <!-- end modal sua -->
+
+    <!--modal sua-->
+    <!-- Modal Khách hàng--->
+    <div class="modal fade" id="suaLoai" role="dialog">
+        <div class="modal-dialog modal-lg">
+            <form  id="form" method="post" action="/admin/loaisp/update">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Sửa Loại SP</h4>
+                    </div>
+                    <div class="modal-body">
+
+                        <table class="table table-hover">
+                            <tr>
+                                <td hidden >mã loại</td>
+                                <td hidden><input name="maloai" type="text"></td>
+                            </tr>
+                            <tr>
+                                <td >Tên loại</td>
+                                <td><input name="tenloai" type="text" required="required"></td>
+
+                            </tr>
+
+
+                        </table>
+                    </div>
+                    <div class="modal-footer">
+                        <!--<button type="button"  id ="btn_save" class="btn btn-default"  data-dismiss="modal">Lưu</button>-->
+                        <button type="submit" id="btn_submitmodal" class="btn btn-default"  >Lưu</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+
+                    </div>
+
+                </div>
+            </form>
+        </div>
+
+    </div>
+    <!-- end modal sua -->
+
+    <!--modal cofirm-->
+    <div class="modal fade" id="confirm" role="dialog">
+        <div class="modal-dialog modal-sm modal-confirm">
+            <form method="post" action="/admin/loaisp/hidden">
+
+                <div class="modal-content">
+                    <p style="font-size: 20px; background: indianred">Bạn có chắc chắn ?</p>
+                    <button type="submit" class="btn btn-default" value="yes"  >Yes</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+                    <input name="delid" value="" hidden>
+                </div>
+            </form>
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+    var images = [];
+
+
+
+    $(document).ready(function () {
+        /*
+
+         $('#content').hide().delay(2000).fadeIn(300);
+         $('.loader').delay(2000).slideUp(300);
+         */
+
+        $('#content').hide().delay(1).fadeIn(1);
+        $('.loader').delay(1).slideUp(1);
+
+
+    });
+    $(document).ready(function () {
+      /*  $(".btn_xoa").on("click",function(e){
+
+            e.preventDefault();
+            var id = $(this).attr("data-id");
+            $("#confirm  .modal-content").append("<input name ='delid' value='"+id+"' > </input>");
+            $("#confirm").show();
+        });*/
+    });
+
+    $(".btn_sua").on("click", function () {
+        id = $(this).attr('id');
+
+        $("input[name='maloai']").val($("#tr"+id+" .maloai").text());
+        $("input[name='tenloai']").val($("#tr"+id+" .tenloai").text());
+
+    });
+
+    function OnDataChange() {
+
+        return false;
+    }
+    function onAddNewSP() {
+        $(".modal").modal('hide');
+        return false;
+
+    }
+
+    $(".btn_xoa").on("click",function(e){
+
+        e.preventDefault();
+        var id = $(this).attr("data-id");
+        console.log(id);
+        $("#confirm  .modal-content input[name='delid']").val(id);
+        $("#confirm").show();
+
+    });
+
+
+
+
+    //for update img
+
+
+    //for insert img
+    //for add img
+
+
+
+
+</script>
+</body>
+</html>

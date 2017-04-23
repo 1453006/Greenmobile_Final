@@ -1,0 +1,40 @@
+<%
+    var current = currentpage;
+    var next = currentpage +1;
+    var prev = currentpage -1;
+
+    console.log(next);
+    console.log(prev);
+
+    var datalength = num;
+    console.log(datalength);
+    var limitdata = limit;
+    console.log(limitdata);
+
+    var searchdata = mysearch;
+
+ %>
+<div class="footer">
+    <div class="container">
+        <nav aria-label="Page navigation example">
+            <ul class="pagination">
+                <p>this is pagi</p>
+                <%if(prev >= 0){%>
+                <%if(searchdata != undefined){%>
+                    <li class="page-item"><a class="page-link" href="?page=<%= prev%>&q=<%= searchdata%>">Previous</a></li>
+                    <%} else {%>
+                    <li class="page-item"><a class="page-link" href="?page=<%= prev%>">Previous</a></li>
+                    <%}%>
+                <%}%>
+
+                <% if(datalength == limit){%>
+                <%if(searchdata != undefined){%>
+                <li class="page-item"><a class="page-link" href="?page=<%= next%>&q=<%= searchdata%>">Next</a></li>
+                <%} else {%>
+                <li class="page-item"><a class="page-link" href="?page=<%= next%>">Next</a></li>
+                <%}%>
+                <%}%>
+            </ul>
+        </nav>
+    </div>
+</div>

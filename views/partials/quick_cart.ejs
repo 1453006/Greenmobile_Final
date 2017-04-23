@@ -1,0 +1,70 @@
+<link rel="stylesheet" href="/stylesheets/quick_cart.css">
+<div class="form clearfix" id = 'quick-cart' style="display: none;  position: fixed;  z-index: 1000000;">
+        <div class="header">
+             <h4>  <i class="fa fa-shopping-cart"></i> My Shopping Cart</h4>
+        </div>
+
+        <ul id ='cart-label'>
+                <li></li>
+                <li></li>
+                <li>Mã sản phẩm</li>
+                <li>Tên sản phẩm</li>
+                <li>Số lượng</li>
+                <li>Đơn giá</li>
+                <li>Tổng tiền</li>
+        </ul>
+        <section id ='cart-product-place'>
+        <%products.forEach(function (product) {%>
+        <ul class='cart-product'>
+                <li class="remove-product" onclick ='removeProduct("<%=product.masp%>")'>x</li>
+                <li></li>
+                <li><%=product.masp%></li>
+                <li><%=product.tensp%></li>
+
+                <li> <%=product.soluongmua%></li>
+                <li><%=product.gia%> Đ</li>
+                <li><%=product.gia%> Đ</li>
+        </ul>
+        <%})%>
+        </section>
+        <div class="total">
+                Subtotal: $560 <br />
+                Total: $560
+        </div>
+
+        <div id ='cart-control'>
+                <div id = 'continue-shopping'>
+                        <i class="fa fa-undo" aria-hidden="true"></i> Tiếp tục mua sắm
+                </div>
+
+
+                <div id = 'pay-button'>
+                        <i class="fa fa-check-square-o" aria-hidden="true"></i><a href="/shellout">
+                                Thanh toán</a>
+                </div>
+        </div>
+
+
+</div>
+<script>
+        $(document).ready(function () {
+            var products = document.getElementsByClassName('cart-product');
+            for(var i =0;i< products.length;++i){
+                if(i%2 ===0){
+                    products[i].style.backgroundColor = '#3e4148';
+                    products[i].style.color = 'white';
+
+                }
+            }
+        })
+        $('#screen-cover').click(function () {
+            $('#screen-cover').fadeOut('fast');
+            $('#quick-cart').fadeOut('slow');
+        })
+        $(document).keydown(function (e) {
+            if(e.keyCode ===27){
+                $('#screen-cover').fadeOut('fast');
+                $('#quick-cart').fadeOut('slow');
+            }
+        })
+</script>

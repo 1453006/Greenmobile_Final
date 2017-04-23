@@ -1,0 +1,174 @@
+<%
+var donhang_arr = donhangs.rows;
+
+    var filter = date;
+ %>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+    <script src="boostrap/js/bootstrap.js"></script>
+
+    <link rel="stylesheet" href="https://www.w3schools.com/lib/w3.css">
+    <link rel="stylesheet" href="../stylesheets/admin.css" type="text/css"/>
+    <link rel="stylesheet" href="../stylesheets/progressbar.css" type="text/css">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
+    <script>
+        $( function() {
+            $( "#datepicker" ).datepicker({
+                dateFormat: 'dd/mm/yy'
+            });
+
+            <%if(filter != undefined){%>
+
+            $('#datepicker').datepicker('setDate', new Date('<%= filter%>'));
+
+            <%}%>
+        } );
+
+        $('#datepicker').datepicker()
+                .on("input change", function (e) {
+                    console.log("Date changed: ", e.target.value);
+                });
+    </script>
+
+</head>
+<body>
+<% include partial/sidebar.ejs%>
+
+
+<div class="container "  id="main">
+    <div class="row">
+        <!--navigation bar-->
+        <% include partial/navbar.ejs%>
+        <!--CONTENT HERE-->
+        <div id="content">
+            <div class="dropdown content" id="dropdown_date">
+
+
+
+                <p>
+
+                    Date: <input type="text" id="datepicker">
+                    <input type="button" name="date-filter" value="filter">
+                </p>
+
+                    <span class="caret"></span></button>
+                <ul class="dropdown-menu" role="menu" aria-labelledby="menu1">
+                    <li role="presentation"><a role="menuitem" href="#">1/1/2017</a></li>
+                    <li role="presentation"><a role="menuitem" href="#">2/1/2017</a></li>
+                    <li role="presentation"><a role="menuitem" href="#">3/1/2017</a></li>
+
+                </ul>
+            </div>
+
+            <table id="maintable" class="table table-hover">
+                <thead>
+                <tr>
+                    <th>Mã HD</th>
+                    <th>Ngày</th>
+                    <th>Tổng giá</th>
+                    <th>Số lượng</th>
+                    <th>Tình trạng</th>
+                    <th>Ghi chú</th>
+                </tr>
+                </thead>
+                <tbody>
+                <% donhang_arr.forEach(function (d) { %>
+
+                <tr id="<%= d.madh%>">
+                    <td><%= d.madh%></td>
+                    <td><%= d.ngaythang%></td>
+                    <td><%= d.tongtien%></td>
+                    <td><%= d.somon%></td>
+
+
+                    <form id="ticker" method="post" action="/admin/donhang/tick">
+                    <%if(d.tinhtrang == 1){%>
+                    <td>  <input type="checkbox" checked></td>
+                    <%} else if(d.tinhtrang == 0){ %>
+                    <td>  <input type="checkbox" ></td>
+                    </form>
+                   <% }%>
+
+                    <%if( d.ghichu != null){%>
+                    <td><input type="radio" name="ghichu" checked> </td>
+                    <%} else {%>
+                    <td><input type="radio" name="ghichu" > </td>
+                    <%}%>
+                </tr>
+                <%})%>
+
+                </tbody>
+            </table>
+        </div>
+
+
+
+        <div class="loader">
+            <svg class="circular" viewBox="25 25 50 50" style="margin-top: 200px">
+                <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"/>
+            </svg>
+        </div>
+
+       <!-- <div class="footer">
+            <div class="container">
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination">
+                        <li class="page-item"><a class="page-link" href="#">Previous</a></li>
+
+                        <li class="page-item"><a class="page-link" href="#">Next</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>-->
+        <% include partial/pagi.ejs%>
+
+
+    </div>
+</div>
+</body>
+<script>
+    $(document).ready(function () {
+
+        $('#content').hide().delay(0).fadeIn(300);
+        $('.loader').delay( 0 ).slideUp(300);
+
+    });
+
+    $("#maintable tr ").click(function (e) {
+
+
+        var id = $(this).attr("id");
+        if (e.target.type == "checkbox") {
+            // stop the bubbling to prevent firing the row's click event
+            document.location.href = "/admin/donhang/check/"+id;
+            e.stopPropagation();
+        } else {
+            document.location.href = "/admin/donhang/"+id;
+        }
+
+    });
+
+    $("input[name='date-filter']").on("click",function () {
+        var filter = $("#datepicker").val().toString();
+        document.location.href = "?date="+filter;
+    });
+
+    /*tick the checkbox */
+
+
+</script>
+</html>

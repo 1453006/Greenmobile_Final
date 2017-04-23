@@ -1,0 +1,272 @@
+<%
+    var khuyenmai_arr = khuyenmais.rows;
+ %>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+    <script src="boostrap/js/bootstrap.js"></script>
+
+    <link rel="stylesheet" href="https://www.w3schools.com/lib/w3.css">
+    <link rel="stylesheet" href="../stylesheets/admin.css" type="text/css"/>
+    <link rel="stylesheet" href="../stylesheets/progressbar.css" type="text/css">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+</head>
+<body>
+<!--sidebar-->
+<% include partial/sidebar.ejs%>
+
+<div class="container " id="main">
+    <div class="row">
+        <!--navigation bar-->
+        <% include partial/navbar.ejs%>
+        <!--CONTENT HERE-->
+        <div class="row content" id="content">
+
+            <button id="btn_addnew" data-toggle="modal" data-target="#modalAddMAKM">Thêm SP</button>
+            <table class="table table-hover">
+                <thead>
+                <tr>
+
+                    <th>Mô tả</th>
+                    <th>Bắt đầu</th>
+                    <th>Kết thúc</th>
+                    <th>Số lượng</th>
+                    <th>Còn lại</th>
+                    <th></th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                <% khuyenmai_arr.forEach(function (k) { %>
+                <tr id="tr<%= k.makm%>">
+                    <td class="makm" hidden><%= k.makm%></td>
+                    <td class="mota"><%= k.mota%></td>
+                    <td class="batdau"><%= k.batdau%></td>
+                    <td class="ketthuc"><%= k.ketthuc%></td>
+                    <td class="soluong"><%= k.soluong%></td>
+                    <td class="conlai"><%= k.soluong - k.dadung%></td>
+                    <td>
+                        <button class="btn_sua" id="<%= k.makm%>" type="button" data-toggle="modal" data-target="#myModal">Sửa</button>
+                    </td>
+                    <td>
+                        <button class="btn_xoa" type="button" data-toggle="modal" data-id="<%=k.makm%>" data-target="#confirm">Xóa</button>
+                    </td>
+                </tr>
+                <% })%>
+                </tbody>
+            </table>
+            </div>
+
+            <div class="loader">
+                <svg class="circular" viewBox="25 25 50 50" style="margin-top: 200px">
+                    <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"/>
+                </svg>
+            </div>
+
+           <!-- <div class="footer">
+                <div class="container">
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination">
+                            <li class="page-item"><a class="page-link" href="#">Previous</a></li>
+
+                            <li class="page-item"><a class="page-link" href="#">Next</a></li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>-->
+        <%include partial/pagi.ejs%>
+
+
+    </div>
+
+    <!-- Modal Sửa -->
+    <div class="modal fade" id="myModal" role="dialog">
+        <div class="modal-dialog modal-lg">
+            <form method="post" action="/admin/km/update" >
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Sửa thông tin</h4>
+                    </div>
+                    <div class="modal-body">
+
+                        <table class="table table-hover">
+                            <tr>
+                                <td hidden>Mã KM</td>
+                                <td hidden><input name="makm" type="text"></td>
+
+                            </tr>
+                            <tr>
+                                <td>Mô tả</td>
+                                <td><input name="mota" type="text"></td>
+                            </tr>
+                            <tr>
+                                <td>Bắt đầu</td>
+                                <td><input name="batdau" type="date"></td>
+                            </tr>
+                            <tr>
+                                <td>Kết thúc</td>
+                                <td><input name="ketthuc" type="date"></td>
+                            </tr>
+                            <tr>
+                                <td>Số lượng</td>
+                                <td><input name="soluong" type="number"></td>
+                            </tr>
+
+
+                        </table>
+                    </div>
+                    <div class="modal-footer">
+                        <!--<button type="button"  id ="btn_save" class="btn btn-default"  data-dismiss="modal">Lưu</button>-->
+                        <button type="submit" class="btn btn-default" >Lưu</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+
+                    </div>
+
+                </div>
+            </form>
+        </div>
+
+    </div>
+
+    <!-- Modal thêm mã km--->
+    <div class="modal fade" id="modalAddMAKM" role="dialog">
+        <div class="modal-dialog modal-lg">
+            <form method="post" action="/admin/km/add">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Thêm mã khuyến mãi</h4>
+                    </div>
+                    <div class="modal-body">
+
+                        <table class="table table-hover">
+                            <tr>
+                                <td hidden>Mã KM</td>
+                                <td hidden><input name="makm" type="text"></td>
+
+                            </tr>
+                            <tr>
+                                <td>Mô tả</td>
+                                <td><input name="mota" type="text" ></td>
+                            </tr>
+                            <tr>
+                                <td>Ngày Bắt đầu</td>
+                                <td><input name="batdau" type="date" ></td>
+                            </tr>
+                            <tr>
+                                <td>Ngày Kết thúc</td>
+                                <td><input name="ketthuc" type="date" ></td>
+                            </tr>
+                            <tr>
+                                <td>Số lượng</td>
+                                <td><input name="soluong" type="number"></td>
+                            </tr>
+
+                        </table>
+                    </div>
+                    <div class="modal-footer">
+                        <!--<button type="button"  id ="btn_save" class="btn btn-default"  data-dismiss="modal">Lưu</button>-->
+                        <button type="submit" class="btn btn-default">Lưu</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+
+                    </div>
+
+                </div>
+            </form>
+        </div>
+
+    </div>
+    <!-- end modal them ma km-->
+    <!--modal cofirm-->
+    <div class="modal fade" id="confirm" role="dialog">
+        <div class="modal-dialog modal-sm modal-confirm">
+            <form method="post" action="/admin/km/del" >
+
+                <div class="modal-content">
+                    <p style="font-size: 20px; background: indianred">Bạn có chắc chắn ?</p>
+                    <button type="submit" class="btn btn-default" value="yes"  >Yes</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+                    </div>
+
+            </form>
+        </div>
+
+    </div>
+
+    <!---end modal confirm -->
+
+</div>
+
+
+</div>
+
+</div>
+<script>
+
+    $(document).ready(function () {
+
+        $('#content').hide().delay(1).fadeIn(1);
+        $('.loader').delay( 1 ).slideUp(1);
+
+    });
+
+    $(".btn_sua").on("click", function () {
+        id = $(this).attr("id");
+
+
+        $("input[name='makm']").val($("#tr"+id+">.makm").text());
+        $("input[name='mota']").val($("#tr"+id+">.mota").text());
+
+
+        var batdau = formatdate($("#tr"+id+">.batdau").text());
+
+        $("input[name='batdau']").val(batdau);
+
+        var ketthuc = formatdate($("#tr"+id+">.ketthuc").text());
+        $("input[name='ketthuc']").val(ketthuc);
+
+        $("input[name='soluong']").val( parseInt($("#tr"+id+">.soluong").text()) );
+
+    });
+    /*// khi nút lưu modal đc click
+     $("#btn_save").on("click",function () {
+
+
+     });*/
+
+
+
+        $(document).ready(function () {
+            $(".btn_xoa").on("click",function(e){
+
+                e.preventDefault();
+                var id = $(this).attr("data-id");
+                console.log(id);
+                $("#confirm  .modal-content").append("<input name ='delid' value='"+id+"' hidden> </input>");
+                $("#confirm").show();
+
+            });
+        });
+
+
+    /*change dd/mm/yyyy to yyyy-mm-dd*/
+    function formatdate(d) {
+       var spliter = d.split("/");
+
+        var newdate = spliter[2] + "-" + spliter[1] +"-"+ spliter[0];
+        return newdate;
+    };
+</script>
+</body>
+</html>

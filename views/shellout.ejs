@@ -1,0 +1,148 @@
+<%
+var has_email = false;
+if(session.makh != undefined)
+    has_email = true;
+%>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="/stylesheets/payment.css">
+</head>
+<body>
+
+<%include ./partials/header.ejs%>
+
+<div class="container " style="width: 100%">
+    <form method="post" action="/order">
+    <div class="row">
+        <div class="content col-md-5">
+            <div class="cate-left ">
+                <div class="row-fluid">
+
+                        <div class="mul-choice">
+                            <h4>Đăng Kí Hoặc Đăng Nhập Để Thanh Toán</h4>
+                            <h6><a href="/shellout">Khách Hàng Thanh Toán</a></h6><hr>
+                            <%if(!has_email){%>
+                                 <h6><a onclick="showLogin()">Đăng Nhập Để Thanh Toán</a></h6>
+                            <%}%>
+                        </div>
+
+                        <div class="info-detail">
+                        <h4>Thông Tin Khách Hàng</h4>
+                            <%if(has_email){%>
+                            <form>
+                                <h5><label class="lb">Tên</label><input  value="<%=session.tenkh%>" name="name" placeholder="Họ Và Tên" class="input-info"></h5>
+                                <h5><label class="lb">Email</label><input value="<%=session.taikhoan%>" name="email" placeholder="Email" class="input-info"></h5>
+                                <h5><label class="lb">Số Điện Thoại</label><input value="<%=session.sdt%>" name="phone" placeholder="Điện Thoại" class="input-info"></h5>
+                                <h5><label class="lb">Địa Chỉ</label><input value="<%=session.diachi%>" name="address" placeholder="Địa Chỉ" class="input-info"></h5>
+                            </form>
+                            <%} else {%>
+                        <form>
+                            <h5><label class="lb">Tên</label><input name="name" placeholder="Họ Và Tên" class="input-info"></h5>
+                            <h5><label class="lb">Email</label><input name="email" placeholder="Email" class="input-info"></h5>
+                            <h5><label class="lb">Số Điện Thoại</label><input name="phone" placeholder="Điện Thoại" class="input-info"></h5>
+                            <h5><label class="lb">Địa Chỉ</label><input name="address" placeholder="Địa Chỉ" class="input-info"></h5>
+                        </form>
+                            <%}%>
+                        </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="content col-md-5" id="yourcart">
+            <div class="pay-type">
+                <h4>Phương Thức Thanh Toán</h4>
+                <label><input type="radio" checked>    Thu Tiền Khi Giao Hàng</label>
+            </div>
+
+            <div class="Coupon">
+                <h4>Bạn Có Mã Coupon</h4>
+
+            </div>
+
+
+            <div class="table-responsive cart-table">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th></th>
+
+                        <th>Tên Sản Phẩm</th>
+                        <th>Số Lượng</th>
+                        <th>Đơn Gía</th>
+                        <th>Tổng Tiền</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    <%var arr = [];var i = 0;  products.forEach(function (product) { arr.push(product.masp)%>
+                    <tr>
+                            <td><i class="fa fa-product-hunt" aria-hidden="true"></i></td>
+
+                            <td><%=product.tensp%></td>
+                            <td><%=product.soluongmua%></td>
+                            <td><%=product.gia%></td>
+                            <%var tmp = product.soluongmua*product.gia%>
+                            <td><%=tmp%></td>
+
+
+                    </tr>
+                    <% i++;}); %>
+                    </tbody>
+                </table>
+            </div>
+            <input type="hidden" name="sanpham" value="<%=arr%>">
+            <div class="note">
+                <h4>Thêm Ghi Chú Của Bạn</h4>
+                <input name="comment" id="comment">
+                <hr>
+                <button class="button confirm1-button">Xác Nhận Đơn Hàng</button>
+            </div>
+
+        </div>
+    </div>
+    </form>
+</div>
+
+
+<footer class="flex-rw">
+    <section class="col-md-12" style="background-color:gray;color:white;font-family:fantasy;text-align: center; height: 40px;line-height: 40px;font-size: 18px;">
+        <div><i class="fa fa-truck" aria-hidden="true"></i>  Giao hàng miễn phí toàn quốc  <i class="fa fa-truck" aria-hidden="true"></i></div>
+    </section>
+    <ul class="footer-list-top">
+        <li>
+            <h4 class="footer-list-header">About GREEN MOBILE</h4></li>
+        <li><p style="color:white;">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur</p></li>
+        </li>
+    </ul>
+    <ul class="footer-list-top">
+        <li>
+            <h4 class="footer-list-header">Contact</h4></li>
+        <li><p style="color:white;">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur</p></li>
+        </li>
+    </ul>
+    <ul class="footer-list-top">
+        <li>
+            <h4 class="footer-list-header">Support</h4></li>
+        <li><p style="color:white;">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur</p></li>
+        </li>
+    </ul>
+    <section class="footer-social-section flex-rw">
+      <span class="footer-social-overlap footer-social-connect">
+      CONNECT <span class="footer-social-small">with</span> US
+      </span>
+        <span class="footer-social-overlap footer-social-icons-wrapper">
+      <a href="https://www.facebook.com/paviliongift" class="generic-anchor" target="_blank" title="Facebook" itemprop="significantLink"><i class="fa fa-facebook"></i></a>
+      <a href="https://twitter.com/PavilionGiftCo" class="generic-anchor" target="_blank" title="Twitter" itemprop="significantLink"><i class="fa fa-twitter"></i></a>
+      <a href="http://instagram.com/paviliongiftcompany" class="generic-anchor" target="_blank" title="Instagram" itemprop="significantLink"><i class="fa fa-instagram"></i></a>
+       </span>
+    </section>
+    <section class="footer-bottom-section flex-rw">
+        <div style="text-align: center" class="footer-bottom-wrapper">
+            <p>14CLC - Group 3 - 1453031 - 1453002 - 1453006</p>
+        </div>
+
+    </section>
+</footer>
+</body>

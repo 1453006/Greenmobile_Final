@@ -1,0 +1,76 @@
+<link rel="stylesheet" href="/stylesheets/signin.css">
+<div  id="log" style="display: none;  position: fixed;  z-index: 1000000;">
+
+    <div class="login-wrap">
+        <div class="login-html">
+            <input id="tab-1" type="radio" name="tab" class="sign-in" checked><label for="tab-1" class="tab">Đăng Nhập</label>
+            <input id="tab-2" type="radio" name="tab" class="sign-up"><label for="tab-2" class="tab">Đăng Ký</label>
+            <div class="login-form">
+
+                <div class="sign-in-htm">
+                    <form  class="form-login" action="/" method="post">
+                    <div class="group">
+                        <label for="user" class="label">Username</label>
+                        <input id="user" type="text" class="input" name="username">
+                    </div>
+                    <div class="group">
+                        <label for="pass" class="label">Password</label>
+                        <input id="pass" type="password" class="input" data-type="password" name="password">
+                    </div>
+                    <div class="group">
+                        <input type="submit" class="button" value="Đăng Nhập">
+                    </div>
+
+                    </form>
+                </div>
+                <div class="sign-up-htm">
+                    <div class="group">
+                        <label for="user" class="label">Họ Và Tên</label>
+                        <input id="user" type="text" class="input">
+                    </div>
+                    <div class="group">
+                        <label for="pass" class="label">Tài Khoản</label>
+                        <input id="pass" type="text" class="input">
+                    </div>
+                    <div class="group">
+                        <label for="pass" class="label">Mật Khẩu</label>
+                        <input id="pass" type="password" class="input" data-type="password">
+                    </div>
+                    <div class="group">
+                        <label for="pass" class="label">Xác Nhận Mật Khẩu</label>
+                        <input id="pass" type="password" class="input" data-type="password">
+                    </div>
+
+                    <div class="group">
+                        <input type="submit" class="button" value="Đăng Ký">
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+<script src="/javascripts/signin.js"></script>
+<script>
+    $(document).ready(function () {
+        var products = document.getElementsByClassName('cart-product');
+        for(var i =0;i< products.length;++i){
+            if(i%2 ===0){
+                products[i].style.backgroundColor = '#3e4148';
+                products[i].style.color = 'white';
+            }
+        }
+    })
+    $('#screen-cover').click(function () {
+        $('#screen-cover').fadeOut('fast');
+        $('#log').fadeOut('slow');
+    })
+    $(document).keydown(function (e) {
+        if(e.keyCode ===27){
+            $('#screen-cover').fadeOut('fast');
+            $('#log').fadeOut('slow');
+        }
+    })
+</script>

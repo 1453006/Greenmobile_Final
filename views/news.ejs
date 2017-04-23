@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="/stylesheets/news.css">
+</head>
+<body>
+<%include ./partials/header.ejs%>
+
+    <div class="container mt-3" style="width: 90%">
+        <div class="news-poster">
+            <h4 id="title">KHUYẾN MÃI</h4>
+            <div class="poster">
+                <img src="/images/arrow-left.png" alt="Prev" id="prev">
+                <div id="slider">
+                    <%news.forEach(function (item) {%>
+                    <div class="slide">
+                        <div class="slide-copy">
+                            <a href="promotional-detail.htm"><h2><%=item.title%></h2>
+                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae commodo sem. Integer eros nibh, molestie congue elementum quis, mattis nec tortor. Vivamus sed hendrerit sed vitae orci convallis.</p></a>
+                        </div>
+                        <a href="promotional-detail.htm"><img src="/images/<%=item.images%>" class="img-fluid" alt="Slider One"></a>
+                    </div>
+                   <%})%>
+                </div>
+                <img src="/images/arrow-right.png" alt="Next" id="next">
+            </div>
+        </div>
+
+        <div class="col-md-12 col-lg-12" id="products">
+            <br><br>
+
+            <br> <h2>Tin Khuyến Mãi</h2>
+
+            <div class="row">
+                <hr>
+                <% news.forEach(function (item) {%>
+                <article class="col-md-4 text-center" id ="detail1">
+                    <div class="row">
+                        <a href="/news/detail/<%=item.matinkm%>">
+                        <div class="col-sm-6 col-md-12">
+                            <img src="/images/<%=item.images%>" class="img-thumnail">
+                        </div>
+                        <div class="col-sm-6 col-md-12">
+                            <p><%=item.tieude%></p>
+
+                        </div>
+                        </a>
+                    </div>
+                </article>
+                <%})%>
+
+            </div>
+        </div>
+    </div>
+    </div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script src="/javascripts/news.js"></script>
+
+<footer class="flex-rw">
+    <section class="col-md-12" style="background-color:gray;color:white;font-family:fantasy;text-align: center; height: 40px;line-height: 40px;font-size: 18px;">
+        <div><i class="fa fa-truck" aria-hidden="true"></i>  Giao hàng miễn phí toàn quốc  <i class="fa fa-truck" aria-hidden="true"></i></div>
+    </section>
+    <ul class="footer-list-top">
+        <li>
+            <h4 class="footer-list-header">About GREEN MOBILE</h4></li>
+        <li><p style="color:white;">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur</p></li>
+        </li>
+    </ul>
+    <ul class="footer-list-top">
+        <li>
+            <h4 class="footer-list-header">Contact</h4></li>
+        <li><p style="color:white;">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur</p></li>
+        </li>
+    </ul>
+    <ul class="footer-list-top">
+        <li>
+            <h4 class="footer-list-header">Support</h4></li>
+        <li><p style="color:white;">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur</p></li>
+        </li>
+    </ul>
+    <section class="footer-social-section flex-rw">
+      <span class="footer-social-overlap footer-social-connect">
+      CONNECT <span class="footer-social-small">with</span> US
+      </span>
+        <span class="footer-social-overlap footer-social-icons-wrapper">
+      <a href="https://www.facebook.com/paviliongift" class="generic-anchor" target="_blank" title="Facebook" itemprop="significantLink"><i class="fa fa-facebook"></i></a>
+      <a href="https://twitter.com/PavilionGiftCo" class="generic-anchor" target="_blank" title="Twitter" itemprop="significantLink"><i class="fa fa-twitter"></i></a>
+      <a href="http://instagram.com/paviliongiftcompany" class="generic-anchor" target="_blank" title="Instagram" itemprop="significantLink"><i class="fa fa-instagram"></i></a>
+       </span>
+    </section>
+    <section class="footer-bottom-section flex-rw">
+        <div style="text-align: center" class="footer-bottom-wrapper">
+            <p>14CLC - Group 3 - 1453031 - 1453002 - 1453006</p>
+        </div>
+
+    </section>
+</footer>
+</body>

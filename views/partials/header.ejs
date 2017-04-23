@@ -1,0 +1,107 @@
+<%
+var has_email = false;
+if(session.makh != undefined)
+    has_email = true;
+console.log("----------------->" +session.makh);
+%>
+
+<head>
+    <link rel="stylesheet" href="/stylesheets/Cart.css">
+    <link rel="stylesheet" href="/stylesheets/style.css">
+    <link rel="stylesheet" href="/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/bootstrap/dist/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="/stylesheets/Cart.css">
+    <link rel="stylesheet" href="/stylesheets/Dropdown.css">
+    <link rel="stylesheet" href="/font-awesome-4.7.0/css/font-awesome.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+</head>
+<section id = 'successful-add' style="background-color: white;padding:20px;border-radius: 3px!important;color:rgb(63, 87, 101);position: fixed;z-index: 1000;top:35%;left: 40%;box-shadow: 0px 0px 1px black;display: none;">
+    <h4>Thêm vào giỏ hàng thành công  <i class="fa fa-shopping-cart"></i></h4>
+</section>
+
+<%include ./signin.ejs%>
+<header class="container-fluid">
+    <section id = 'header-top'>
+        <a href="#" style="margin-right: 15px;">
+            <i class="fa fa-phone" aria-hidden="true"></i>
+            1900 6098 (1000d/ph)
+        </a>
+        <a href="#" style="margin-right: 15px;">
+            <i class="fa fa-wrench" aria-hidden="true"></i>
+            Repair
+        </a>
+        <a href="#">
+            <i class="fa fa-gamepad" aria-hidden="true"></i>
+            Games
+        </a>
+    </section>
+    <section id = 'header-content' class="row">
+        <a class="col-sm-3">
+            <img src="images/logo_mobile-240x43.png" class="img-responsive" >
+        </a>
+
+        <form class="col-sm-7" id ='search-bar'>
+            <div id = 'search-place'>
+                <input type="text" onfocus="onBarFocus()" onblur="onBarBlur()">
+                <button type="submit" id ='search-button'><i class="fa fa-search" aria-hidden="true"></i>
+                </button>
+
+            </div>
+        </form>
+        <div id="cart_details_1" class="col-sm-2" onclick="showCart()">
+            <div class="cart_btn">
+                <span class="items" id="cart-amount">(<%=amountOfProduct%> sản phẩm)</span>
+
+                <span class="icon"><i class="fa fa-shopping-cart"></i></span>
+            </div>
+        </div>
+        <script src="/javascripts/Cart.js"></script>
+    </section>
+    <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/"><i class="fa fa-home" aria-hidden="true"></i>
+                     Home</a>
+            </div>
+            <div class="collapse navbar-collapse" id="myNavbar">
+                <ul class="nav navbar-nav">
+
+                    <li><a href="#">Sản phẩm</a></li>
+                    <li><a href="#">Apple</a></li>
+                    <li><a href="#">Samsung Galaxy</a></li>
+                    <li><a href="/news">Tin Khuyến Mãi</a></li>
+
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <%if(has_email) {%>
+                    <li class="dropdown">
+                        <a data-toggle="dropdown"><span class="glyphicon glyphicon-user"></span> <%=session.tenkh%> </a>
+                        <ul class="dropdown-menu memberOption">
+                            <li style="color: #0f0f0f"><a href="/manage-account">Quản Lý Tài Khoản</a></li>
+                            <li style="color: #0f0f0f"><a href="/logout">Đăng Xuất</a></li>
+                        </ul>
+                    </li>
+                        <!--<li><a href="/logout"><span class="glyphicon glyphicon-log-in"></span> Đăng Xuất</a></li>-->
+                    <%} else {%>
+                    <li><a href="/signup"><span class="glyphicon glyphicon-user"></span> Đăng ký</a></li>
+                    <li><a href="/login"><span class="glyphicon glyphicon-log-in"></span> Đăng nhập</a></li>
+                    <%}%>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <section id = 'cart-showing-place'></section>
+</header>
+<script src="/javascripts/signin.js"></script>
+
+
+
+
+
