@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,8 +6,6 @@
     <title>Title</title>
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
-
 
 
     <link rel="stylesheet" href="https://www.w3schools.com/lib/w3.css">
@@ -22,13 +21,24 @@
 
     <script type="text/javascript">
         $(document).ready(function () {
-            chart = InitPieChart("iphone 6", "iphone 7", "samsung", 30, 20, 20, 30);
-            chart.render();
 
-            ordersSplineChart = InitLineChart();
+
+            var data = [];
+            <%doanhthuthang.forEach(function (a) { %>
+            data.push({thang:'<%= a.thang%>',nam:'<%= a.yyyy%>',doanhthu:'<%= a.doanhthu%>'});
+
+            <% })%>
+            ordersSplineChart = InitLineChart(data);
             ordersSplineChart.render();
 
-            barchart = InitBarChart();
+
+            var label = [];
+            var data = [];
+            <%topsanpham.forEach(function (a) { %>
+                label.push('<%= a.tensp%>');
+                data.push(<%= a.daban%>);
+           <% })%>
+            barchart = InitBarChart(label,data);
             barchart.render();
         });
 
@@ -49,14 +59,16 @@
         <div class="row content" id="content">
             <div class="col-lg-4">
                 <div class="card drop-shadow dashboard_card" style="height: 300px;">
-                    <p class="card-title">Doanh thu tháng <%= current %></p>
+                    <h4 class="card-header">Doanh thu tháng <%= current %></h4>
+
                     <p class="card-detail"><%= tongdoanhthu%></p>
                 </div>
             </div>
 
             <div class="col-lg-8">
                 <div class="card drop-shadow dashboard_card" style="height: 300px;">
-                    <p class="card-title">Đơn hàng gần nhất</p>
+                    <h4 class="card-header">Đơn hàng gần nhất</h4>
+
                     <table class="table table-hover" id="topdonhang">
                         <tr>
                             <td >Mã Hóa đơn</td>
@@ -87,13 +99,15 @@
         <div class="row content" id="content">
 
             <div class="col-lg-6">
-                <div class="card drop-shadow">
-                    <h4 class="card-header">Orders</h4>
-                    <div class="card-block">
-                        <div id="chartContainer" style="height: 300px; width: 100%;"></div>
+
+                    <div class="card drop-shadow">
+                        <h4 class="card-header">Top sản phẩm bán chạy</h4>
+                        <div class="card-block">
+                            <div id="barchart" style="height: 300px; width: 100%;"></div>
+                        </div>
+
                     </div>
 
-                </div>
             </div>
             <div class="col-lg-6">
                 <div class="card drop-shadow">
@@ -107,15 +121,7 @@
 
         <div class="row content">
 
-            <div class="col-lg-6">
-                <div class="card drop-shadow">
-                    <h4 class="card-header">Orders</h4>
-                    <div class="card-block">
-                        <div id="barchart" style="height: 300px; width: 100%;"></div>
-                    </div>
 
-                </div>
-            </div>
 
 
         </div>
@@ -132,8 +138,8 @@
 <script>
     $(document).ready(function () {
 
-        $('#content').hide().delay(2000).fadeIn(300);
-        $('.loader').delay( 2000 ).slideUp(300);
+        $('#content').hide().delay(0).fadeIn(0);
+        $('.loader').delay( 0 ).slideUp(0);
 
     });
     $("#topdonhang tr").click(function (e) {

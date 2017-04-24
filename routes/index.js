@@ -9,6 +9,7 @@ var passwordHash = require('password-hash');
 var path = require("path"),
 fs = require('fs');
 var passport = require('passport');
+var moment = require('moment');
 
 var storage = multer.diskStorage({
     destination: './public/uploads',
@@ -645,7 +646,9 @@ router.post('/order',function (req,res) {
         }
         var q1 = "insert into donhang(ngaythang,somon,tongtien,ghichu,makh,tinhtrang) values('@ngaythang','@somon','@tongtien','@ghichu','@makh','@tinhtrang') returning madh";
         q1= q1.replace('@makh', session.makh);
-        q1= q1.replace('@ngaythang', '04/18/2017');
+        var currentdate = moment().format("MM-DD-YYYY");
+
+        q1= q1.replace('@ngaythang', currentdate);
         q1= q1.replace('@somon', products.length);
         q1= q1.replace('@tongtien', tongtien);
         q1= q1.replace('@ghichu', ghichu);
@@ -661,6 +664,9 @@ router.post('/order',function (req,res) {
 
             var key = result.rows[0].madh;
             console.log("key : "+ result.rows[0].madh);
+
+
+
             for(var i = 0 ; i < products.length;i++)
             {
                 var tmp = products[i];
@@ -676,6 +682,10 @@ router.post('/order',function (req,res) {
                     q2= q2.replace('@tinhtrang', 0);
 
 
+                    var q3 = "update sanpham set daban = daban + '@soluong' where masp = '@masp' ";
+                    q3 = q3.replace('@soluong',tmp.soluongmua);
+                    q3 = q3.replace('@masp',tmp.masp);
+
                     client.query(q2, function (err, result) {
                         //call `done(err)` to release the client back to the pool (or destroy it if there is an error)
                         done(err);
@@ -683,9 +693,20 @@ router.post('/order',function (req,res) {
                             return console.error('error running query', err);
                         }
                     });
+
+                    client.query(q3, function (err, result) {
+                        //call `done(err)` to release the client back to the pool (or destroy it if there is an error)
+                        done(err);
+                        if (err) {
+                            return console.error('error running query', err);
+                        }
+                    });
+
                 });
             }
         });
+
+
         res.redirect('/');
     });
 
@@ -703,7 +724,7 @@ router.get('/admin', function(req, res, next) {
     }
     else{
         var search = req.query.q;
-        res.render("admin/ad_dashboard.ejs",{mysearch:search});
+        res.redirect("admin/dashboard")
 
     }
 
@@ -1280,14 +1301,14 @@ router.get('/admin/kh', function(req, res, next) {
 
     if(search != undefined)
     {
-        query =  "select makh,tenkh,sdt,taikhoan,to_char(ngaythamgia,'DD/MM/YYYY') as ngaythamgia,tenstatus as status,tongchi " +
+        query =  "select makh,tenkh,sdt,taikhoan,to_char(ngaythamgia,'DD/MM/YYYY') as ngaythamgia,tenstatus as status,tongchi,khoa " +
             "from khachhang left join ctstatus  on khachhang.mastatus = ctstatus.mastatus" +
             " where LOWER(tenkh) like LOWER('%@search%') or LOWER(taikhoan) like LOWER('%@search%') order by makh limit 10 offset @offset;"
         query = query.replace("@search",search);
         query = query.replace("@search",search);
     }
     else{
-        query =  "select makh,tenkh,sdt,taikhoan,to_char(ngaythamgia,'DD/MM/YYYY') as ngaythamgia,tenstatus as status,tongchi " +
+        query =  "select makh,tenkh,sdt,taikhoan,to_char(ngaythamgia,'DD/MM/YYYY') as ngaythamgia,tenstatus as status,tongchi,khoa " +
             "from khachhang left join ctstatus  on khachhang.mastatus = ctstatus.mastatus" +
             " order by makh limit 10 offset @offset;"
     }
@@ -1474,6 +1495,37 @@ router.post('/admin/kh/del', function(req, res, next) {
 
 });
 
+router.post('/admin/kh/lock', function(req, res, next) {
+
+    var makh = req.body.lockid;
+
+
+    pool.connect(function(err, client, done) {
+        if(err) {
+            return console.error('error fetching client from pool', err);
+        }
+
+
+        var q ="update khachhang set khoa = ~(khoa) where makh = '@makh' ";
+        q = q.replace("@makh",makh);
+        console.log(q);
+        //use the client for executing the query
+        client.query(q, function(err, result) {
+            //call `done(err)` to release the client back to the pool (or destroy it if there is an error)
+            done(err);
+
+            if(err) {
+                return console.error('error running query', err);
+            }
+
+            res.redirect("/admin/kh");
+
+        });
+    });
+
+
+});
+
 /*route for setting*/
 router.get('/admin/st', function(req, res, next) {
 
@@ -1599,6 +1651,8 @@ router.get('/admin/dashboard', function(req, res, next) {
 
     var topdonhang = [];
     var tongdoanhthu = 0;
+    var doanhthuthang = [];
+    var arrTopsanpham = [];
     pool.connect(function(err, client, done) {
         if(err) {
             return console.error('error fetching client from pool', err);
@@ -1640,16 +1694,76 @@ router.get('/admin/dashboard', function(req, res, next) {
                 tongdoanhthu = row.doanhthu;
 
             });
-            queryFoods.on('end', function () {
-                done();
-                res.render("admin/ad_dashboard.ejs",{mysearch:search,topdonhang:topdonhang, tongdoanhthu:tongdoanhthu,current: currentmonth});
-            });
+            queryFoods.on('end',topsanpham)
         }
+
+        var doanhthuBymonth = function () {
+
+            var q4 = "select to_char(ngaythang,'Mon') as thang, " +
+                "extract(year from ngaythang) as yyyy, " +
+                "sum(tongtien) as doanhthu " +
+                "from donhang" +
+                " group by 1,2";
+
+
+            console.log(q4);
+            var queryFoods = client.query(q4, function (err, resultstatus) {
+                //call `done(err)` to release the client back to the pool (or destroy it if there is an error)
+                /*   done(err);*/
+
+
+                if (err) {
+                    return console.error('error running query', err);
+                }
+
+            });
+
+            queryFoods.on('row', function (row) {
+
+                doanhthuthang.push(row);
+
+            });
+            queryFoods.on('end',sumdoanhthu)
+        }
+
+        var topsanpham = function () {
+
+            var q3 = "select masp,tensp,daban from sanpham order by daban DESC limit 5";
+            var currentmonth = new Date().getMonth() + 1;
+            q3 = q3.replace('@currentmonth',currentmonth);
+            console.log(q3);
+            var query = client.query(q3, function (err, resultstatus) {
+                //call `done(err)` to release the client back to the pool (or destroy it if there is an error)
+                /*   done(err);*/
+
+
+                if (err) {
+                    return console.error('error running query', err);
+                }
+
+            });
+
+            query.on('row', function (row) {
+
+                arrTopsanpham.push(row);
+
+            });
+            query.on('end', function () {
+                done();
+                console.log(doanhthuthang);
+                res.render("admin/ad_dashboard.ejs",{mysearch:search,topdonhang:topdonhang, tongdoanhthu:tongdoanhthu,current: currentmonth,
+                    topsanpham:arrTopsanpham,doanhthuthang:doanhthuthang});
+            });
+
+        }
+
+
+
         queryPreferences.on('row',function (my) {
             topdonhang.push(my);
             console.log(my);
         });
-        queryPreferences.on('end', sumdoanhthu);
+        queryPreferences.on('end',doanhthuBymonth );
 
     });
 

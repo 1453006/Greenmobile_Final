@@ -53,7 +53,11 @@
                 <%khachhang_arr.forEach(function (kh) {%>
 
 
+                <%if(kh.khoa == '1') {%>
+                <tr id="tr<%= kh.makh%>" style="background: lightsalmon">
+                    <%}else {%>
                 <tr id="tr<%= kh.makh%>">
+                    <%}%>
                     <td class="makh" hidden><%= kh.makh%></td>
                     <td class="tenkh"><%= kh.tenkh%></td>
                     <td class="taikhoan"><%= kh.taikhoan%></td>
@@ -61,12 +65,23 @@
                     <td  class="ngaythamgia"><%= kh.ngaythamgia%></td>
                     <td  class="status"><%= kh.status%></td>
                     <td class="tongchi"><%= kh.tongchi%></td>
+
                     <td>
                         <button class="btn_sua" id="<%= kh.makh%>" type="button" data-toggle="modal" data-target="#myModal">Sửa</button>
                     </td>
                     <td>
                         <button class="btn_xoa" data-id="<%= kh.makh%>" type="button" data-toggle="modal" data-target="#confirm">Xóa</button>
                     </td>
+                    <%if(kh.khoa == '1') {%>
+                    <td>
+                        <button class="btn_khoa" data-id="<%= kh.makh%>" type="button" data-toggle="modal" data-target="#confirmlock">Mở khóa</button>
+                    </td>
+                    <%}else{%>
+                    <td>
+                        <button class="btn_khoa" data-id="<%= kh.makh%>" type="button" data-toggle="modal" data-target="#confirmlock">Khóa</button>
+                    </td>
+                    <%}%>
+
                 </tr>
 
 
@@ -174,6 +189,20 @@
     </div>
     <!---end modal confirm -->
 
+    <div class="modal fade" id="confirmlock" role="dialog">
+        <div class="modal-dialog modal-sm modal-confirm">
+            <form method="post" action="/admin/kh/lock">
+
+                <div class="modal-content">
+                    <p style="font-size: 20px; background: indianred">Bạn có chắc chắn ?</p>
+                    <button type="submit" class="btn btn-default" value="yes"  >Yes</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+                </div>
+            </form>
+        </div>
+
+    </div>
+
 
 </div>
 <script>
@@ -257,6 +286,16 @@
         console.log(id);
         $("#confirm  .modal-content").append("<input name ='delid' value='"+id+"' hidden> </input>");
         $("#confirm").show();
+
+    });
+
+    $(".btn_khoa").on("click",function(e){
+
+        e.preventDefault();
+        var id = $(this).attr("data-id");
+        console.log(id);
+        $("#confirmlock  .modal-content").append("<input name ='lockid' value='"+id+"' hidden> </input>");
+        $("#confirmlock").show();
 
     });
 
