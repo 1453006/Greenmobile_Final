@@ -66,7 +66,11 @@ var donhang = ctdonhang;
                                 <td>  <input type="text" name="mactdh[<%= i%>]" value="<%= donhang[i].mactdh%>" hidden></td>
                                 <td>  <input type="text" name="madh" value="<%= donhang[i].madh%>" hidden></td>
                                 <td>  <input type="text" name="masp[[<%= i%>]" value="<%= donhang[i].masp%>" hidden></td>
-                                <td>  <input type="text" id="tinhtrang<%= i%>" name="tinhtrang[<%= i%>]" value="<%= donhang[i].tinhtrang%>" hidden></td>
+                               <% if(donhang[i].tinhtrang == 0) {%>
+                                <td>  <input type="text" id="tinhtrang<%= i%>" name="tinhtrang[<%= i%>]" value="0" hidden></td>
+                                <%}else {%>
+                                <td>  <input type="text" id="tinhtrang<%= i%>" name="tinhtrang[<%= i%>]" value="1" hidden></td>
+                                <%}%>
 
                             </tr>
                             <%} %>

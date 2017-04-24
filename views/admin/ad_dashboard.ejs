@@ -47,6 +47,44 @@
 
         <!--CONTENT HERE-->
         <div class="row content" id="content">
+            <div class="col-lg-4">
+                <div class="card drop-shadow dashboard_card" style="height: 300px;">
+                    <p class="card-title">Doanh thu tháng <%= current %></p>
+                    <p class="card-detail"><%= tongdoanhthu%></p>
+                </div>
+            </div>
+
+            <div class="col-lg-8">
+                <div class="card drop-shadow dashboard_card" style="height: 300px;">
+                    <p class="card-title">Đơn hàng gần nhất</p>
+                    <table class="table table-hover" id="topdonhang">
+                        <tr>
+                            <td >Mã Hóa đơn</td>
+                            <td>Ngày tháng</td>
+                            <td >Số món</td>
+                            <td >Tổng tiền</td>
+                        </tr>
+
+                        <%if(topdonhang != undefined){%>
+                        <% topdonhang.forEach(function (d) { %>
+                        <tr id="<%= d.madh%>">
+                            <td ><%= d.madh%></td>
+                            <td><%= d.ngaythang%></td>
+                            <td><%= d.somon%></td>
+                            <td><%= d.tongtien%></td>
+
+                        </tr>
+                        <%})};%>
+
+
+                    </table>
+                </div>
+            </div>
+
+
+        </div>
+
+        <div class="row content" id="content">
 
             <div class="col-lg-6">
                 <div class="card drop-shadow">
@@ -96,6 +134,13 @@
 
         $('#content').hide().delay(2000).fadeIn(300);
         $('.loader').delay( 2000 ).slideUp(300);
+
+    });
+    $("#topdonhang tr").click(function (e) {
+
+        e.preventDefault();
+        var id = $(this).attr("id");
+        document.location.href = "/admin/donhang/"+id;
 
     });
 

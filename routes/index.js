@@ -643,12 +643,13 @@ router.post('/order',function (req,res) {
         if (err) {
             return console.error('error fetching client from pool', err);
         }
-        var q1 = "insert into donhang(ngaythang,somon,tongtien,ghichu,makh) values('@ngaythang','@somon','@tongtien','@ghichu','@makh') returning madh";
+        var q1 = "insert into donhang(ngaythang,somon,tongtien,ghichu,makh,tinhtrang) values('@ngaythang','@somon','@tongtien','@ghichu','@makh','@tinhtrang') returning madh";
         q1= q1.replace('@makh', session.makh);
         q1= q1.replace('@ngaythang', '04/18/2017');
         q1= q1.replace('@somon', products.length);
         q1= q1.replace('@tongtien', tongtien);
         q1= q1.replace('@ghichu', ghichu);
+        q1= q1.replace('@tinhtrang', 0);
 
         client.query(q1, function (err, result) {
             //call `done(err)` to release the client back to the pool (or destroy it if there is an error)
@@ -668,10 +669,11 @@ router.post('/order',function (req,res) {
                     if (err) {
                         return console.error('error fetching client from pool', err);
                     }
-                    var q2 = "insert into ctdonhang(madh,masp,soluong) values('@madh','@masp','@soluong')";
+                    var q2 = "insert into ctdonhang(madh,masp,soluong,tinhtrang) values('@madh','@masp','@soluong','@tinhtrang')";
                     q2= q2.replace('@madh', key);
                     q2= q2.replace('@masp', tmp.masp);
                     q2= q2.replace('@soluong', tmp.soluongmua);
+                    q2= q2.replace('@tinhtrang', 0);
 
 
                     client.query(q2, function (err, result) {
@@ -690,7 +692,73 @@ router.post('/order',function (req,res) {
 
 })
 
-/* THIS IS ADMIN ROUTE ONLY */
+/* -----------------------------------THIS IS ADMIN ROUTE ONLY-----------------------------------------------*/
+
+router.get('/admin', function(req, res, next) {
+
+    var sess = req.session;
+    if(sess.admin === undefined)
+    {
+        res.render("admin/ad_login.ejs");
+    }
+    else{
+        var search = req.query.q;
+        res.render("admin/ad_dashboard.ejs",{mysearch:search});
+
+    }
+
+});
+
+router.post('/admin', function(req, res, next) {
+
+    var admin = req.body.username;
+    var password = req.body.password;
+
+    pool.connect(function (err,client,done) {
+        if (err) {
+            return console.error('error fetching client from pool', err);
+        }
+        client.query("select taikhoan,password from admin", function (err, result) {
+            //call `done(err)` to release the client back to the pool (or destroy it if there is an error)
+            // console.log(result.rows);
+            done(err);
+
+            if (err) {
+                return console.error('error running query', err);
+            }
+            var check = -1;
+
+            for (var i = 0; i < result.rows.length; i++) {
+
+                if (admin == result.rows[i].taikhoan && passwordHash.verify(password, result.rows[i].password) ) {
+                    check = 1;
+
+                    var sess = req.session;
+                    sess.admin = admin;
+                    sess.save();
+
+                    break;
+
+                }
+            }
+            if(check == 1){
+                res.redirect('/admin/dashboard');
+            }
+            else {
+                res.send("not found");
+            }
+
+        });
+    });
+});
+
+router.get('/admin/logout',function (req,res,nect) {
+
+    var sess = req.session;
+    sess.admin = undefined;
+    res.redirect("/admin");
+});
+
 router.get('/admin/sp', function(req, res, next) {
 
     var search = req.query.q;
@@ -700,6 +768,12 @@ router.get('/admin/sp', function(req, res, next) {
     var tableloaisp = [];
     var tablesp = [];
     var query = "";
+
+    var sess = req.session;
+    if(sess.admin == undefined)
+    {
+        res.redirect("/admin");
+    }
     if(search == undefined)
     {
         query = "select sanpham.masp as masp,tensp,gia,tonkho,images,mahxs," +
@@ -1027,7 +1101,11 @@ router.get('/admin/km', function(req, res, next) {
     var page = req.query.page;
 
     var query = "";
-
+    var sess = req.session;
+    if(sess.admin == undefined)
+    {
+        res.redirect("/admin");
+    }
     if(search == undefined)
     {
         query = "select makm,mota,to_char(batdau,'DD/MM/YYYY') as batdau," +
@@ -1194,6 +1272,12 @@ router.get('/admin/kh', function(req, res, next) {
     var page = req.query.page;
 
     var query = "";
+    var sess = req.session;
+    if(sess.admin == undefined)
+    {
+        res.redirect("/admin");
+    }
+
     if(search != undefined)
     {
         query =  "select makh,tenkh,sdt,taikhoan,to_char(ngaythamgia,'DD/MM/YYYY') as ngaythamgia,tenstatus as status,tongchi " +
@@ -1394,6 +1478,11 @@ router.post('/admin/kh/del', function(req, res, next) {
 router.get('/admin/st', function(req, res, next) {
 
     var search = req.query.q;
+    var sess = req.session;
+    if(sess.admin == undefined)
+    {
+        res.redirect("/admin");
+    }
     pool.connect(function(err, client, done) {
         if(err) {
             return console.error('error fetching client from pool', err);
@@ -1501,8 +1590,70 @@ router.post('/admin/uploadimg', upload.any(), function (req, res, next) {
 
 /*route for admin dashboard*/
 router.get('/admin/dashboard', function(req, res, next) {
+    var sess = req.session;
+    if(sess.admin == undefined)
+    {
+        res.redirect("/admin");
+    }
     var search = req.query.q;
-    res.render("admin/ad_dashboard.ejs",{mysearch:search});
+
+    var topdonhang = [];
+    var tongdoanhthu = 0;
+    pool.connect(function(err, client, done) {
+        if(err) {
+            return console.error('error fetching client from pool', err);
+        }
+
+        var query = "select madh,to_char(ngaythang,'DD/MM/YYYY') as ngaythang,somon,tongtien from donhang ORDER BY madh DESC LIMIT 5"
+        console.log(query);
+        var queryPreferences = client.query(query, function (err, result) {
+            //call `done(err)` to release the client back to the pool (or destroy it if there is an error)
+            /*  done(err);*/
+
+            if (err) {
+                return console.error('error running query', err);
+            }
+
+
+        });
+
+        var sumdoanhthu = function () {
+
+            var q2 = "select sum(tongtien) as doanhthu from donhang " +
+                "where EXTRACT(MONTH FROM ngaythang) = '@currentmonth';";
+            var currentmonth = new Date().getMonth() + 1;
+            q2 = q2.replace('@currentmonth',currentmonth);
+            console.log(q2);
+            var queryFoods = client.query(q2, function (err, resultstatus) {
+                //call `done(err)` to release the client back to the pool (or destroy it if there is an error)
+                /*   done(err);*/
+
+
+                if (err) {
+                    return console.error('error running query', err);
+                }
+
+            });
+
+            queryFoods.on('row', function (row) {
+
+                tongdoanhthu = row.doanhthu;
+
+            });
+            queryFoods.on('end', function () {
+                done();
+                res.render("admin/ad_dashboard.ejs",{mysearch:search,topdonhang:topdonhang, tongdoanhthu:tongdoanhthu,current: currentmonth});
+            });
+        }
+        queryPreferences.on('row',function (my) {
+            topdonhang.push(my);
+            console.log(my);
+        });
+        queryPreferences.on('end', sumdoanhthu);
+
+    });
+
+
 });
 
 
@@ -1513,6 +1664,12 @@ router.get('/admin/ad',function (req,res,next) {
     var search = req.query.q;
     var page = req.query.page;
     var currentpage = 0;
+
+    var sess = req.session;
+    if(sess.admin == undefined)
+    {
+        res.redirect("/admin");
+    }
 
     pool.connect(function(err, client, done) {
         if(err) {
@@ -1564,6 +1721,8 @@ router.post('/admin/ad/add',function (req,res,next) {
     var password = req.body.password;
     var mabimat = req.body.mabimat;
 
+    var hashedPassword = passwordHash.generate(password);
+
     if(mabimat === 'mysupersecret') {
         pool.connect(function (err, client, done) {
             if (err) {
@@ -1573,7 +1732,7 @@ router.post('/admin/ad/add',function (req,res,next) {
 
             var q = "insert into admin(taikhoan,password) values ('@taikhoan','@password');"
             q = q.replace('@taikhoan', taikhoan);
-            q = q.replace('@password', password);
+            q = q.replace('@password', hashedPassword);
 
             console.log(q);
             //use the client for executing the query
@@ -1647,7 +1806,11 @@ router.get('/admin/donhang',function (req,res,next){
     var currentpage = 0;
 
     var page = req.query.page;
-
+    var sess = req.session;
+    if(sess.admin == undefined)
+    {
+        res.redirect("/admin");
+    }
     pool.connect(function(err, client, done) {
         if(err) {
             return console.error('error fetching client from pool', err);
@@ -1844,6 +2007,8 @@ router.post('/admin/ctdh/update',function (req,res,next) {
     var masp = req.body.masp;
     var soluong = req.body.soluong;
     var n = req.body.numchild;
+
+
 
     var query = " insert into ctdonhang(mactdh,madh,masp,soluong,tinhtrang) values ";
     for(var i =0;i< mactdh.length;i++)
